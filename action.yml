@@ -4,7 +4,7 @@ inputs:
   build-script:
     description: "Build script to run in the container"
     required: true
-    default: "./build.sh"
+    default: ".github/workflows/build.sh"
 runs:
   using: "docker"
   image: "Dockerfile"
