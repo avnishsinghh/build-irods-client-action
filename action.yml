@@ -1,0 +1,5 @@
+name: "Build iRODS client"
+description: "An environment for building iRODS clients"
+runs:
+  using: "docker"
+  image: "Dockerfile"
