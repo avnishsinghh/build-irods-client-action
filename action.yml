@@ -1,5 +1,12 @@
-name: "Build iRODS client"
+name: "Build iRODS clients"
 description: "An environment for building iRODS clients"
+inputs:
+  build-script:
+    description: "Build script to run in the container"
+    required: true
+    default: "./build.sh"
 runs:
   using: "docker"
   image: "Dockerfile"
+  args:
+    - ${{ inputs.build-script }}
