@@ -1,0 +1,44 @@
+name: "Unit tests"
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    continue-on-error: ${{ matrix.experimental }} # Experimental builds may fail
+
+    strategy:
+      matrix:
+        include:
+          # iRODS 4.2.7 clients on Ubuntu 16.04
+          - irods: "4.2.7"
+            build_image: "ghcr.io/wtsi-npg/ub-16.04-irods-clients-dev-4.2.7:latest"
+            experimental: false
+          # iRODS 4.2.11 clients on Ubuntu 18.04
+          - irods: "4.2.11"
+            build_image: "ghcr.io/wtsi-npg/ub-18.04-irods-clients-dev-4.2.11:latest"
+            experimental: false
+          # iRODS 4.2.12 clients on Ubuntu 18.04
+          - irods: "4.2.12"
+            build_image: "ghcr.io/wtsi-npg/ub-18.04-irods-clients-dev-4.2.12:latest"
+            experimental: false
+          # iRODS 4.3.1 clients on Ubuntu 22.04
+          - irods: "4.3.1"
+            build_image: "ghcr.io/wtsi-npg/ub-22.04-irods-clients-dev-4.3.1:latest"
+            experimental: false
+          # iRODS 4.3.2 clients on Ubuntu 22.04
+          - irods: "4.3.2"
+            build_image: "ghcr.io/wtsi-npg/ub-22.04-irods-clients-dev-4.3.2:latest"
+            experimental: false
+
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: Test Action
+        uses: ./
+        with:
+          build-image: ${{ matrix.build_image }}
+
+    

@@ -1,12 +1,36 @@
 name: "Build iRODS clients"
+
 description: "An environment for building iRODS clients"
+
 inputs:
+  build-image:
+    description: "Docker image to use for the build environment"
+    required: true
+    default: "ghcr.io/wtsi-npg/ub-18.04-irods-clients-dev-4.2.11:latest"
   build-script:
     description: "Build script to run in the container"
     required: true
     default: ".github/workflows/build.sh"
+
+# The simple approach to implementing this Action described here:
+# https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action
+# does not work because value given in input.build-image is not available to the
+# run.image field.
+#
+# One workaround is to use a composite run action, although that's not very well
+# documented and I maye be doing it wrong.
+
 runs:
-  using: "docker"
-  image: "Dockerfile"
-  args:
-    - ${{ inputs.build-script }}
+  using: "composite"
+  steps:
+    - name: "Build a new image for this run"
+      env:
+        BASE_IMAGE: ${{ inputs.build-image }}
+      run: |
+        docker pull $BASE_IMAGE
+        docker build --build-arg BASE_IMAGE=$BASE_IMAGE -t test-img-${{github.run_id}} .
+      shell: bash
+    - name: "Run the client build in the new image"
+      run: |
+        docker run --rm -t -v $PWD:$PWD --workdir $PWD test-img-${{github.run_id}} ${{ inputs.build-script }} 
+      shell: bash
