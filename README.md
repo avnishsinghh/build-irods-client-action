@@ -24,6 +24,11 @@ value is hard-coded.
 **Required** The relative path in the work directory of a build script to run in
 the container. Defaults to `".github/workflows/build.sh"`
 
+## `build-image`
+
+**Required** The iRODS client builder image to use as a base image. Defaults to
+`"ghcr.io/wtsi-npg/ub-18.04-irods-clients-dev-4.2.11:latest"`
+
 ## Outputs
 
 ## None
@@ -34,6 +39,8 @@ the container. Defaults to `".github/workflows/build.sh"`
 - name: "Build Package"
   uses: wtsi-npg/build-irods-client-action@v1
   with:
+    build-image:
+      ghcr.io/wtsi-npg/ub-22.04-irods-clients-dev-4.3.2:latest
     build-script:
       .github/workflows/build.sh
 ```

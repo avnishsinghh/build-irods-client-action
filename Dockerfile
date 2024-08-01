@@ -1,4 +1,6 @@
-FROM ghcr.io/wtsi-npg/ub-18.04-irods-clients-dev-4.2.11:latest
+ARG BASE_IMAGE
+
+FROM $BASE_IMAGE
 
 COPY entrypoint.sh /entrypoint.sh
 
