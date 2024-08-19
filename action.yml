@@ -28,6 +28,8 @@ runs:
         BASE_IMAGE: ${{ inputs.build-image }}
       run: |
         docker pull $BASE_IMAGE
+        pwd
+        ls -l
         docker build --build-arg BASE_IMAGE=$BASE_IMAGE -t test-img-${{github.run_id}} .
       shell: bash
     - name: "Run the client build in the new image"
