@@ -32,5 +32,5 @@ runs:
       shell: bash
     - name: "Run the client build in the new image"
       run: |
-        docker run --rm -t -v $PWD:$PWD --workdir $PWD test-img-${{github.run_id}} ${{ inputs.build-script }} 
+        docker run --rm -t -v $(pwd):/github/workspace --workdir /github/workspace test-img-${{github.run_id}} ${{ inputs.build-script }}
       shell: bash
