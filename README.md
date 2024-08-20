@@ -29,6 +29,15 @@ the container. Defaults to `".github/workflows/build.sh"`
 **Required** The iRODS client builder image to use as a base image. Defaults to
 `"ghcr.io/wtsi-npg/ub-18.04-irods-clients-dev-4.2.11:latest"`
 
+## `docker-network`
+
+**Required** The Docker network on which to run the jobs. Defaults to "host".
+Use this if your calling workflow has configured some services that are running
+in Docker containers. The correct value is available in the job context. E.g.
+if you have a service called "mysql-server" then the Docker network name will
+be available as `${{ job.services.mysql-server.network }}` in the workflow
+that uses this Action.
+
 ## Outputs
 
 ## None
@@ -37,10 +46,12 @@ the container. Defaults to `".github/workflows/build.sh"`
 
 ```yaml
 - name: "Build Package"
-  uses: wtsi-npg/build-irods-client-action@v1
+  uses: wtsi-npg/build-irods-client-action@v1.1.1
   with:
     build-image:
       ghcr.io/wtsi-npg/ub-22.04-irods-clients-dev-4.3.2:latest
     build-script:
       .github/workflows/build.sh
+    docker-network:
+      service-network
 ```

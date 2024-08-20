@@ -11,26 +11,28 @@ inputs:
     description: "Build script to run in the container"
     required: true
     default: ".github/workflows/build.sh"
+  docker-network:
+    description: "Docker network to use for the container"
+    required: false
+    default: "host"
 
 # The simple approach to implementing this Action described here:
 # https://docs.github.com/en/actions/creating-actions/creating-a-docker-container-action
-# does not work because value given in input.build-image is not available to the
+# does not work because a value given in input.build-image is not available to the
 # run.image field.
 #
-# One workaround is to use a composite run action, although that's not very well
-# documented and I maye be doing it wrong.
+# One workaround is described here:
+# https://github.com/JavierZolotarchuk/parameterizable-docker-action-example
+#
+# Credit to JavierZolotarchuk for the workaround described in the link above. I've used
+# it here. In order for the Action to be able to use Docker services set up by the calling
+# workflow, it must know the name of the Docker network to use. This is passed in as a
+# another parameter.
 
 runs:
-  using: "composite"
-  steps:
-    - name: "Build a new image for this run"
-      env:
-        BASE_IMAGE: ${{ inputs.build-image }}
-      run: |
-        docker pull $BASE_IMAGE
-        docker build --build-arg BASE_IMAGE=$BASE_IMAGE -t test-img-${{github.run_id}} .
-      shell: bash
-    - name: "Run the client build in the new image"
-      run: |
-        docker run --rm -t -v $PWD:$PWD --workdir $PWD test-img-${{github.run_id}} ${{ inputs.build-script }} 
-      shell: bash
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.build-image }}
+    - ${{ inputs.build-script }}
+    - ${{ inputs.docker-network }}
